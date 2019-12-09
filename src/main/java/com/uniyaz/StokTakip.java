@@ -56,7 +56,7 @@ public class StokTakip {
     void stokMaliyetHesapla() {
         double toplamMaliyet = 0;
         double maliyet = 0;
-        System.out.println("Ürün Adı     |   Ürün Miktarı   |  Stok oluşturan Personel ");
+        System.out.println("Ürün Adı     |   Ürün Miktarı   |  Stok maliyeti ");
         System.out.println("------------------------------------------------------------");
         for (Stok stok : stokListesi) {
             if (stok.getUrunMiktarTuru().equals(EnumMiktarTuru.KILO)) {

@@ -1,8 +1,6 @@
 package com.uniyaz;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Hello world!
@@ -12,6 +10,10 @@ public class HalApp {
     static Map<Integer, Personel> personelListesi = new HashMap<>();
     static Map<Integer, Musteri> musteriListesi = new HashMap<>();
 
+    static Urun urun = null;
+    static Personel personel = null;
+    static EnumMiktarTuru urunMiktarTuru = null;
+    static float urunMiktar = 0;
 
     public static void main(String[] args) {
 
@@ -55,11 +57,7 @@ public class HalApp {
             switch (menuSecim) {
 
                 case 1: // stok olustur
-                    Urun urun = null;
-                    Personel personel = null;
-                    EnumMiktarTuru urunMiktarTuru = null;
-                    float urunMiktar = 0;
-                    kullanicidanVeriAl(scanner,urun, personel, urunMiktarTuru, urunMiktar);
+                    kullanicidanVeriAl(scanner);
                     stokTakip.stokOLustur(urun, urunMiktar, urunMiktarTuru, personel);
                     break;
                 case 2: //stok görüntüle
@@ -107,17 +105,14 @@ public class HalApp {
                 default:
                     throw new IllegalStateException("Unexpected value: " + menuSecim);
                 case 4: //satış yap
-                    Urun urun2 = null;
-                    Personel personel_2 = null;
-                    EnumMiktarTuru urunMiktarTuru2 = null;
-                    float urunMiktar2=0;
-                    kullanicidanVeriAl(scanner,urun2,personel_2, urunMiktarTuru2,urunMiktar2);
+
+                    kullanicidanVeriAl(scanner);
 
                     System.out.println("Satış yapılan müşteri id'sini giriniz: ");
                     int musteriId = scanner.nextInt();
                     Musteri musteri = musteriListesi.get(musteriId);
 
-                    satisTakip.satisYap(urun2, urunMiktar2, urunMiktarTuru2, personel_2, musteri);
+                    satisTakip.satisYap(urun, urunMiktar, urunMiktarTuru, personel, musteri);
                     break;
             }
 
@@ -141,9 +136,10 @@ public class HalApp {
         }
     }
 
-    private static void kullanicidanVeriAl(Scanner scanner, Urun urun, Personel personel, EnumMiktarTuru urunMiktarTuru, float urunMiktar) {
+    private static void kullanicidanVeriAl(Scanner scanner) {
         int urunSecim;
         int turSecim;
+
         System.out.println("Eklemek istediğiniz stok ürününü giriniz:\n" +
                 "1.Domates \n" +
                 "2.Salatalık \n" +
@@ -187,6 +183,7 @@ public class HalApp {
         System.out.println("Stoğu gerçekleştiren Personel id'sini giriniz: ");
         int personelId = scanner.nextInt();
         personel = personelListesi.get(personelId);
+
 
     }
 }

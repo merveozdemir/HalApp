@@ -13,7 +13,6 @@ public class SatisTakip {
                 if (urunMiktari == stok.getUrunMiktari()) {
                     StokTakip.stokListesi.remove(stok);
                 } else if (urunMiktari < stok.getUrunMiktari()) {
-                    System.out.println("else if girdi");
                     float kalanMiktar = stok.getUrunMiktari() - urunMiktari;
                     stok.changeStokYapilanUrunMiktari(kalanMiktar);
                 } else {
