@@ -1,6 +1,8 @@
 package com.uniyaz;
 
-public class Domates extends Sebze {
+import java.io.Serializable;
+
+public class Domates extends Sebze  {
 
     @Override
     double getUrunKiloFiyati() {

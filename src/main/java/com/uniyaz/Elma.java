@@ -1,7 +1,9 @@
 package com.uniyaz;
 
 
-public class Elma extends Meyve {
+import java.io.Serializable;
+
+public class Elma extends Meyve  {
 
     @Override
     double getUrunKiloFiyati() {

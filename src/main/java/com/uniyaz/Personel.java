@@ -1,12 +1,13 @@
 package com.uniyaz;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Personel {
+public class Personel implements Serializable {
    private String adi;
    private String soyadi;
    private int personelId;
-   private static int idCounter;
+   static int idCounter;
 
     public Personel(String adi, String soyadi) {
         this.adi = adi;

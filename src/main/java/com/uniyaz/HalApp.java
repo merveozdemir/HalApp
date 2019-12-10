@@ -2,13 +2,15 @@ package com.uniyaz;
 
 import java.util.*;
 
+import static java.util.Collections.max;
+
 /**
  * Hello world!
  */
 public class HalApp {
 
-    static Map<Integer, Personel> personelListesi = new HashMap<>();
-    static Map<Integer, Musteri> musteriListesi = new HashMap<>();
+    static Map<Integer, Personel> personelMap = new HashMap<>();
+    static Map<Integer, Musteri> musteriMap = new HashMap<>();
 
     static Urun urun = null;
     static Personel personel = null;
@@ -16,41 +18,39 @@ public class HalApp {
     static float urunMiktar = 0;
 
     public static void main(String[] args) {
+        StokTakip stokTakip = new StokTakip();
+        SatisTakip satisTakip = new SatisTakip();
 
-        Personel personel1 = new Personel("Merve", "Özdemir");
-        Personel personel2 = new Personel("Elif", "Kadim");
-        Personel personel3 = new Personel("Ümmü", "Can");
-        Personel personel4 = new Personel("Selin", "Daldaban");
+        stokTakip.stokListesi = Veritabani.stokBilgileriniDosyadanAl();
+        satisTakip.satisListesi = Veritabani.satisBilgileriniDosyadanAl();
+        List<Personel> personelList = Veritabani.personelleriDosyadanAl();
+        List<Musteri> musteriList = Veritabani.musterileriDosyadanAl();
 
-        personelListesi.put(personel1.getPersonelId(), personel1);
-        personelListesi.put(personel2.getPersonelId(), personel2);
-        personelListesi.put(personel3.getPersonelId(), personel3);
-        personelListesi.put(personel4.getPersonelId(), personel4);
+        for (Personel personel : personelList) {
+            personelMap.put(personel.getPersonelId(), personel);
+        }
+        for (Musteri musteri : musteriList) {
+            musteriMap.put(musteri.getMusteriId(), musteri);
+        }
 
-        Musteri musteri1 = new Musteri("Ahmet", "Ak");
-        Musteri musteri2 = new Musteri("Mehmet", "Yüce");
-        Musteri musteri3 = new Musteri("Ayşe", "Kara");
-        Musteri musteri4 = new Musteri("Derya", "Şahin");
-
-        musteriListesi.put(musteri1.getMusteriId(), musteri1);
-        musteriListesi.put(musteri2.getMusteriId(), musteri2);
-        musteriListesi.put(musteri3.getMusteriId(), musteri3);
-        musteriListesi.put(musteri4.getMusteriId(), musteri4);
-
-
-        System.out.println("-----------HAL STOK TAKİP UYGULAMASI-----------");
+        System.out.println("\033[1m-----------HAL STOK TAKİP UYGULAMASI-----------\033[0m");
         tumPersonelGoruntule();
         tumMusteriGoruntule();
 
-        StokTakip stokTakip = new StokTakip();
-        SatisTakip satisTakip = new SatisTakip();
+        boolean programCalisiyor = true;
         Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("Yapmak istediğiniz işlemi seçiniz: ");
+        while (programCalisiyor) {
+            System.out.println("*************************************");
+            System.out.println("\033[1mYapmak istediğiniz işlemi seçiniz:");
             System.out.println("1. Stok oluştur");
             System.out.println("2. Stok görüntüle");
             System.out.println("3. Stok maliyet hesapla");
             System.out.println("4. Satış Yap");
+            System.out.println("5. Satış Görüntüle");
+            System.out.println("6. Yeni Personel Ekle");
+            System.out.println("7. Yeni Müşteri Ekle");
+            System.out.println("0. Çıkış");
+            System.out.println("************************************* \033[0m");
 
             int menuSecim = scanner.nextInt();
             scanner.nextLine();
@@ -94,7 +94,7 @@ public class HalApp {
                         tumPersonelGoruntule();
                         System.out.println("Seçmek istediğiniz personeli giriniz:");
                         int secilenPersonelId = scanner.nextInt();
-                        Personel secilenPersonel = personelListesi.get(secilenPersonelId);
+                        Personel secilenPersonel = personelMap.get(secilenPersonelId);
                         stokTakip.alinanStokGoruntule(secilenPersonel);
                     }
 
@@ -102,38 +102,75 @@ public class HalApp {
                 case 3: //stok maliyet hesapla
                     stokTakip.stokMaliyetHesapla();
                     break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + menuSecim);
                 case 4: //satış yap
-
                     kullanicidanVeriAl(scanner);
-
                     System.out.println("Satış yapılan müşteri id'sini giriniz: ");
                     int musteriId = scanner.nextInt();
-                    Musteri musteri = musteriListesi.get(musteriId);
+                    Musteri musteri = musteriMap.get(musteriId);
 
                     satisTakip.satisYap(urun, urunMiktar, urunMiktarTuru, personel, musteri);
                     break;
+                case 5: //satis listesi görüntüle
+                    satisTakip.satisListesiGoruntule();
+                    break;
+                case 6: //yeni personel ekle
+                    System.out.println("Eklemek istediğiniz personelin adını giriniz: ");
+                    String personelAdi = scanner.nextLine();
+
+                    System.out.println("Eklemek istediğiniz personelin soyadını giriniz: \"");
+                    String personelSoyadi = scanner.nextLine();
+
+                    if (!personelMap.isEmpty()){
+                        Personel.idCounter = max(personelMap.keySet());
+                    }
+                    Personel yeniPersonel = new Personel(personelAdi,personelSoyadi);
+                    personelMap.put(yeniPersonel.getPersonelId(), yeniPersonel);
+                    personelList.add(yeniPersonel);
+                    Veritabani.personelVeritabaniOlustur(personelList);
+                    tumPersonelGoruntule();
+                    break;
+                case 7: //yeni musteri ekle
+                    System.out.println("Eklemek istediğiniz müşterinin adını giriniz: ");
+                    String musteriAdi = scanner.nextLine();
+
+                    System.out.println("Eklemek istediğiniz müşterinin soyadını giriniz: \"");
+                    String musteriSoyadi = scanner.nextLine();
+
+                    if (!musteriMap.isEmpty()){
+                        Musteri.idCounter = max(musteriMap.keySet());
+                    }
+                    Musteri yeniMusteri = new Musteri(musteriAdi,musteriSoyadi);
+                    musteriMap.put(yeniMusteri.getMusteriId(), yeniMusteri);
+                    musteriList.add(yeniMusteri);
+                    Veritabani.musteriVeritabaniOlustur(musteriList);
+                    tumMusteriGoruntule();
+                    break;
+                case 0:
+                    programCalisiyor = false;
+                    System.out.println("Çıkış...");
+                    break;
             }
-
-
         }
-
     }
 
     private static void tumMusteriGoruntule() {
-        System.out.println("---Mevcut müşteriler---");
-        for (Musteri musteri : musteriListesi.values()) {
+        System.out.println("\033[1m Müşteriler \033[0m");
+        List<Musteri> dosyadanOkunanMusteriler = Veritabani.musterileriDosyadanAl();
+        for (Musteri musteri : dosyadanOkunanMusteriler) {
             System.out.println(musteri.toString());
         }
+        System.out.println("-------------------------------------");
 
     }
 
     private static void tumPersonelGoruntule() {
-        System.out.println("---Mevcut personeller---");
-        for (Personel personel : personelListesi.values()) {
+        System.out.println("\033[1m Personeller \033[0m");
+        List<Personel> dosyadanOkunanPersoneller = Veritabani.personelleriDosyadanAl();
+        for (Personel personel : dosyadanOkunanPersoneller) {
             System.out.println(personel.toString());
         }
+        System.out.println("-------------------------------------");
+
     }
 
     private static void kullanicidanVeriAl(Scanner scanner) {
@@ -182,7 +219,7 @@ public class HalApp {
 
         System.out.println("Stoğu gerçekleştiren Personel id'sini giriniz: ");
         int personelId = scanner.nextInt();
-        personel = personelListesi.get(personelId);
+        personel = personelMap.get(personelId);
 
 
     }

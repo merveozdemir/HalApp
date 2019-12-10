@@ -1,6 +1,8 @@
 package com.uniyaz;
 
-public abstract class Islem {
+import java.io.Serializable;
+
+public abstract class Islem implements Serializable {
     private Personel islemiYapanPersonel;
     private Urun islemiYapilanUrun;
     private float urunMiktari;

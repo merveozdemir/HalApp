@@ -14,13 +14,15 @@ public class StokTakip {
     void stokOLustur(Urun stokYapilanUrun, float urunMiktar, EnumMiktarTuru miktarTuru, Personel stokYapanPersonel) {
         Stok stok = new Stok(stokYapanPersonel, stokYapilanUrun, urunMiktar, miktarTuru);
         this.stokListesi.add(stok);
+        Veritabani.stokVeritabaniOlustur(stokListesi);
     }
 
 
     void alinanStokGoruntule(String urunAdi) {
         System.out.println("Ürün Adı     |   " + urunAdi);
         System.out.println("------------------------------------------------------------");
-        for (Stok stok : stokListesi) {
+        List<Stok> stokList = Veritabani.stokBilgileriniDosyadanAl();
+        for (Stok stok : stokList) {
             if (stok.getIslemiYapilanUrun().getUrunAdi().equals(urunAdi)) {
                 System.out.println(stok.getUrunMiktari() + " " + stok.getUrunMiktarTuru() + " " +
                         "   |  " + stok.getIslemiYapanPersonel().getAdi() + " " +
@@ -34,31 +36,43 @@ public class StokTakip {
 
     void alinanStokGoruntule(Personel stokYapanPersonel) {
         System.out.println("--- " + stokYapanPersonel.getAdi() + " " + stokYapanPersonel.getSoyadi() + " ---");
-        for (Stok stok : stokListesi) {
+        List<Stok> stokList = Veritabani.stokBilgileriniDosyadanAl();
+        for (Stok stok : stokList) {
             if (stok.getIslemiYapanPersonel().equals(stokYapanPersonel)) {
                 System.out.println(stok.getIslemiYapilanUrun().getUrunAdi() + "   |   " + stok.getUrunMiktari() + " " + stok.getUrunMiktarTuru());
             }
         }
+
+        System.out.println("------------------------------------------------------------------------------------------");
 
     }
 
     void alinanStokGoruntule() {
         System.out.println("Ürün Adı     |   Ürün Miktarı   |  Stok oluşturan Personel ");
         System.out.println("------------------------------------------------------------");
-        for (Stok stok : stokListesi) {
-            System.out.println(stok.getIslemiYapilanUrun().getUrunAdi() + "     |     " + stok.getUrunMiktari() + " " + stok.getUrunMiktarTuru() + " " +
-                    "    |     " +
-                    "" + stok.getIslemiYapanPersonel().getAdi() + " " + stok.getIslemiYapanPersonel().getSoyadi());
+        try{
+            List<Stok> stokList = Veritabani.stokBilgileriniDosyadanAl();
+            for (Stok stok : stokList) {
+                System.out.println(stok.getIslemiYapilanUrun().getUrunAdi() + "     |     " + stok.getUrunMiktari() + " " + stok.getUrunMiktarTuru() + " " +
+                        "    |     " + "" + stok.getIslemiYapanPersonel().getAdi() + " " + stok.getIslemiYapanPersonel().getSoyadi());
+            }
+        }catch(NullPointerException e){
+            System.out.println("Boş stok...");
         }
+        System.out.println("----------------------------------------------------------------");
+
+
+
 
     }
 
     void stokMaliyetHesapla() {
         double toplamMaliyet = 0;
         double maliyet = 0;
+        List<Stok> stokList = Veritabani.stokBilgileriniDosyadanAl();
         System.out.println("Ürün Adı     |   Ürün Miktarı   |  Stok maliyeti ");
         System.out.println("------------------------------------------------------------");
-        for (Stok stok : stokListesi) {
+        for (Stok stok : stokList) {
             if (stok.getUrunMiktarTuru().equals(EnumMiktarTuru.KILO)) {
                 maliyet = stok.getUrunMiktari() * stok.getIslemiYapilanUrun().getUrunKiloFiyati();
             } else if (stok.getUrunMiktarTuru().equals(EnumMiktarTuru.ADET)) {

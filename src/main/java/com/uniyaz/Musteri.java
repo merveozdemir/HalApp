@@ -1,12 +1,13 @@
 package com.uniyaz;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Musteri {
+public class Musteri implements Serializable {
     private String adi;
     private String soyadi;
     private int musteriId;
-    private static int idCounter;
+    static int idCounter;
 
     public Musteri(String adi, String soyadi) {
         this.adi = adi;

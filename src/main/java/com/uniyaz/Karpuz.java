@@ -1,5 +1,7 @@
 package com.uniyaz;
 
+import java.io.Serializable;
+
 public class Karpuz extends Meyve {
 
 
